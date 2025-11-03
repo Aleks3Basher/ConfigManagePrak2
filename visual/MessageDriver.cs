@@ -1,5 +1,6 @@
 ﻿
 using ConfigManagePrak2.configuration;
+using ConfigManagePrak2.dependency;
 
 namespace ConfigManagePrak2.visual
 {
@@ -34,6 +35,22 @@ namespace ConfigManagePrak2.visual
             Console.WriteLine("  -o, --output FILE     Имя сгенерированного файла с изображением графа (по умолчанию: dependency_graph.png)");
             Console.WriteLine("  -f, --filter SUBSTR   Подстрока для фильтрации пакетов");
             Console.WriteLine("  -h, --help            Показать эту справку");
+        }
+
+        public static void DisplayDependencies(InitialConfig config, List<Dependency> dependencies)
+        {
+            Console.WriteLine($"\nПрямые зависимости пакета '{config.PackageName}':");
+            if (dependencies.Count == 0)
+            {
+                Console.WriteLine("  Зависимости не найдены");
+            }
+            else
+            {
+                foreach (var dependency in dependencies)
+                {
+                    Console.WriteLine($"  - {dependency.Name} {dependency.Version}");
+                }
+            }
         }
 
     }
