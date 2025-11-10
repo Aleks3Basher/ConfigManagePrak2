@@ -5,6 +5,7 @@ namespace ConfigManagePrak2.dependency
     {
         public string Name { get; set; } = string.Empty;
         public string Version { get; set; } = string.Empty;
+        public int LoadPriority { get; set; } = 0;
         public List<Dependency> Dependencies { get; set; } = [];
 
         public override string ToString()

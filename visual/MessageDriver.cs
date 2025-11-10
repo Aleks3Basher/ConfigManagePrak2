@@ -76,7 +76,7 @@ namespace ConfigManagePrak2.visual
 
             if (shouldDisplay)
             {
-                Console.WriteLine($"{indent}- {package.Name} {package.Version}");
+                Console.WriteLine($"{indent}- [{package.LoadPriority}] {package.Name} {package.Version}");
             }
 
             foreach (var dependency in package.Dependencies)

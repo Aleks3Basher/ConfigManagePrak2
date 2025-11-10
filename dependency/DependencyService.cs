@@ -19,12 +19,12 @@ namespace ConfigManagePrak2.dependency
             LocalRepository repository = LocalRepository.At(InitialConfig.RepositoryUrl);
             Dependency root = new() { Name = InitialConfig.PackageName, Version = "Latest" };
 
-            PutLocalDeps(repository, root, new Stack<string>());
+            PutLocalDeps(repository, root, new Stack<string>(), 0);
 
             return root;
         }
 
-        private static void PutLocalDeps(LocalRepository repository, Dependency parent, Stack<string> currentPath)
+        private static void PutLocalDeps(LocalRepository repository, Dependency parent, Stack<string> currentPath, int depth)
         {
             currentPath.Push(parent.Name);
 
@@ -46,8 +46,8 @@ namespace ConfigManagePrak2.dependency
                         $"Обнаружена циклическая зависимость: {string.Join(" -> ", cycle)}");
                 }
 
-                Dependency dependency = new() { Name = dependencyName, Version = entry.Value };
-                PutLocalDeps(repository, dependency, currentPath);
+                Dependency dependency = new() { Name = dependencyName, Version = entry.Value, LoadPriority = depth};
+                PutLocalDeps(repository, dependency, currentPath, depth + 1);
                 parent.Dependencies.Add(dependency);
             }
 
@@ -95,7 +95,7 @@ namespace ConfigManagePrak2.dependency
                         $"Обнаружена циклическая зависимость: {string.Join(" -> ", cyclePath)}");
                 }
 
-                Dependency dependency = new() { Name = dependencyName, Version = entry.Value };
+                Dependency dependency = new() { Name = dependencyName, Version = entry.Value, LoadPriority = depth };
                 if(depth < MAX_DEPTH) await PutNugetDepends(client, dependency, currentPath, depth + 1);
 
                 parent.Dependencies.Add(dependency);
