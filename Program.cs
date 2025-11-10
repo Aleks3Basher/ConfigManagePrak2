@@ -10,14 +10,13 @@ namespace ConfigManagePrak2
         {
             try
             {
-                var config = new InitialConfig();
-                config.ParseFromArgs(args);
+                InitialConfig.ParseFromArgs(args);
 
-                MessageDriver.DisplayInitialConfig(config);
+                MessageDriver.DisplayInitialConfig();
 
-                var dependencies = await DependencyService.GetPackageDependenciesAsync(config);
+                Dependency dependencies = await DependencyService.GetPackageDependenciesAsync();
 
-                MessageDriver.DisplayDependencies(config, dependencies);
+                MessageDriver.DisplayDependencyGraph(dependencies, InitialConfig.FilterSubstring);
             }
             catch (Exception ex)
             {

@@ -2,15 +2,15 @@
 
 namespace ConfigManagePrak2.configuration
 {
-    public class InitialConfig
+    public static class InitialConfig
     {
-        public string PackageName { get; set; } = string.Empty;
-        public string RepositoryUrl { get; set; } = string.Empty;
-        public bool UseTestRepository { get; set; } = false;
-        public string OutputFileName { get; set; } = "dependency_graph.png";
-        public string FilterSubstring { get; set; } = string.Empty;
+        public static string PackageName { get; set; } = string.Empty;
+        public static string RepositoryUrl { get; set; } = string.Empty;
+        public static bool UseTestRepository { get; set; } = false;
+        public static string OutputFileName { get; set; } = "dependency_graph.png";
+        public static string FilterSubstring { get; set; } = string.Empty;
 
-        public void ParseFromArgs(string[] args)
+        public static void ParseFromArgs(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
             {

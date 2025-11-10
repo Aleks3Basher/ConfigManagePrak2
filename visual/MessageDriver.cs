@@ -7,14 +7,14 @@ namespace ConfigManagePrak2.visual
     public static class MessageDriver
     {
 
-        public static void DisplayInitialConfig(InitialConfig config)
+        public static void DisplayInitialConfig()
         {
             Console.WriteLine("Текущая конфигурация:");
-            Console.WriteLine($"  Имя пакета: {config.PackageName}");
-            Console.WriteLine($"  URL репозитория: {config.RepositoryUrl}");
-            Console.WriteLine($"  Режим тестового репозитория: {config.UseTestRepository}");
-            Console.WriteLine($"  Имя выходного файла: {config.OutputFileName}");
-            Console.WriteLine($"  Подстрока для фильтрации: {(string.IsNullOrEmpty(config.FilterSubstring) ? "не задана" : config.FilterSubstring)}");
+            Console.WriteLine($"  Имя пакета: {InitialConfig.PackageName}");
+            Console.WriteLine($"  URL репозитория: {InitialConfig.RepositoryUrl}");
+            Console.WriteLine($"  Режим тестового репозитория: {InitialConfig.UseTestRepository}");
+            Console.WriteLine($"  Имя выходного файла: {InitialConfig.OutputFileName}");
+            Console.WriteLine($"  Подстрока для фильтрации: {(string.IsNullOrEmpty(InitialConfig.FilterSubstring) ? "не задана" : InitialConfig.FilterSubstring)}");
         }
 
         public static void DisplayError(String errorMessage)
@@ -37,9 +37,9 @@ namespace ConfigManagePrak2.visual
             Console.WriteLine("  -h, --help            Показать эту справку");
         }
 
-        public static void DisplayDependencies(InitialConfig config, List<Dependency> dependencies)
+        public static void DisplayDependencies(List<Dependency> dependencies)
         {
-            Console.WriteLine($"\nПрямые зависимости пакета '{config.PackageName}':");
+            Console.WriteLine($"\nПрямые зависимости пакета '{InitialConfig.PackageName}':");
             if (dependencies.Count == 0)
             {
                 Console.WriteLine("  Зависимости не найдены");
@@ -49,6 +49,41 @@ namespace ConfigManagePrak2.visual
                 foreach (var dependency in dependencies)
                 {
                     Console.WriteLine($"  - {dependency.Name} {dependency.Version}");
+                }
+            }
+        }
+
+
+        public static void DisplayDependencyGraph(Dependency graph, string filter)
+        {
+            Console.WriteLine($"\nГраф зависимостей для пакета '{graph.Name}':");
+            var visited = new HashSet<string>();
+            DisplayPackageDependencies(graph, visited, 0, filter);
+        }
+
+        static void DisplayPackageDependencies(Dependency package, HashSet<string> visited, int level, string filter)
+        {
+            if (visited.Contains(package.Name))
+            {
+                Console.WriteLine($"{new string(' ', level * 2)}- {package.Name} {package.Version} [УЖЕ ПОСЕЩЕН]");
+                return;
+            }
+
+            visited.Add(package.Name);
+            var indent = new string(' ', level * 2);
+
+            bool shouldDisplay = string.IsNullOrEmpty(filter) || !package.Name.Contains(filter);
+
+            if (shouldDisplay)
+            {
+                Console.WriteLine($"{indent}- {package.Name} {package.Version}");
+            }
+
+            foreach (var dependency in package.Dependencies)
+            {
+                if (string.IsNullOrEmpty(filter) || !dependency.Name.Contains(filter))
+                {
+                    DisplayPackageDependencies(dependency, visited, level + 1, filter);
                 }
             }
         }
