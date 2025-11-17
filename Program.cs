@@ -16,7 +16,9 @@ namespace ConfigManagePrak2
 
                 Dependency dependencies = await DependencyService.GetPackageDependenciesAsync();
 
-                MessageDriver.DisplayDependencyGraph(dependencies, InitialConfig.FilterSubstring);
+                var generator = new PlantUMLGraphGenerator(dependencies, InitialConfig.FilterSubstring);
+                await generator.SaveAsPngAsync("repo_uml.png");
+                generator.SavePlantUmlToFile("repo_uml_text.puml");
             }
             catch (Exception ex)
             {
